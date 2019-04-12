@@ -6,14 +6,14 @@ import java.io.IOException;
 
 public class Victoire extends JFrame {
 
-    private monPanelDessin zoneD;
+
     private Image gg;
-    private Dimension screensize;
+
 
     public Victoire(){
 
         super("Victoire");
-        screensize=Toolkit.getDefaultToolkit().getScreenSize();
+        Dimension screensize=Toolkit.getDefaultToolkit().getScreenSize();
         this.setVisible(true);
         this.setResizable(false);
         this.setBounds(0,0,(int)screensize.getWidth(),(int)screensize.getHeight());
@@ -24,7 +24,7 @@ public class Victoire extends JFrame {
             System.out.println(ex);
         }
 
-        zoneD=new monPanelDessin(gg);
+        monPanelDessin zoneD=new monPanelDessin(gg);
         zoneD.setBounds(0,0,this.getWidth(),this.getHeight());
         this.add(zoneD);
 

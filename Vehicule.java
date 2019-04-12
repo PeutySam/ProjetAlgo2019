@@ -1,4 +1,9 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+
 
 public class Vehicule {
 
@@ -6,15 +11,27 @@ public class Vehicule {
     private Point vit; //Vitesse du Véhicule
     private Point acc; //Accélération du Véhicule
     private double poids; //Poids du Véhicule
-    private Color maCouleur; //Couleur du Véhicule
+    private BufferedImage image;
+    private double inclinaison;
+
+
 
     //Constructeur du Véhicule
-    public Vehicule(double m,Color c) {
-        maCouleur=c;
+    public Vehicule(double m) {
+
         this.poids = m;
+        this.inclinaison=0;
         this.pos=new Point(50,50);
         this.vit=new Point(0,0); //pas de vitesse initiale
         this.acc=new Point(0,0);
+        try {
+
+            image = ImageIO.read(new File("Sam/images/cadis.png"));
+
+        }catch (Exception e){
+            System.out.println(e);
+        }
+
 
     }
     //Accesseur
@@ -34,9 +51,7 @@ public class Vehicule {
         return this.poids;
     }
 
-    public double getInclinaison() {
-        return Math.atan(this.vit.getY() / this.vit.getX());
-    }
+
 
     public void Avance() {
         this.pos.setX(this.pos.getX() + this.vit.getX());
@@ -66,13 +81,41 @@ public class Vehicule {
         this.poids=m;
 
     }
+    public void setInclinaison(double i){
+        this.inclinaison=i;
+    }
+
+
     public void dessine (Graphics g){
-       g.setColor(maCouleur);
-       g.fillOval((int)this.pos.getX()-10,(int)this.pos.getY()-10,10,10);
+
+
+        g.drawImage(rotateImage(image,this.inclinaison),(int)this.getPos().getX()-45,(int)this.getPos().getY()-50,70,70,null);
+        g.fillOval((int)this.pos.getX()-10,(int)this.pos.getY()-10,10,10);
+
+
 
     }
     public double normeVit(){
         return Math.sqrt(Math.pow(this.getVit().getX(),2)+Math.pow(this.getVit().getY(),2));
     }
+    private BufferedImage rotateImage(BufferedImage originalImage, double degree) {
+        int w = originalImage.getWidth();
+        int h = originalImage.getHeight();
+        double toRad = Math.toRadians(degree);
+        int hPrime = (int) (w * Math.abs(Math.sin(toRad)) + h * Math.abs(Math.cos(toRad)));
+        int wPrime = (int) (h * Math.abs(Math.sin(toRad)) + w * Math.abs(Math.cos(toRad)));
+        BufferedImage rotatedImage = new BufferedImage(wPrime, hPrime, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = rotatedImage.createGraphics();
+        g.setComposite(AlphaComposite.Clear);
+        g.fillRect(0, 0, wPrime, hPrime);
+        g.setComposite(AlphaComposite.Src);
+        g.translate(wPrime/2, hPrime/2);
+        g.rotate(toRad);
+        g.translate(-w/2, -h/2);
+        g.drawImage(originalImage, 0, 0, null);
+        g.dispose();
+        return rotatedImage;
+    }
+
 }
 
